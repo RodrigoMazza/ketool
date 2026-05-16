@@ -75,7 +75,7 @@ npm run build
 
 El paquete de distribución incluye un asistente web (`instalador.html`) que guía el proceso paso a paso sin necesidad de terminal ni conocimientos de programación.
 
-**Descargar el paquete listo para instalar:** [ver releases](https://github.com/RodrigoMazza/ligo/releases)
+**Descargar el paquete listo para instalar:** [LIGO v1.0](https://github.com/RodrigoMazza/ligo/releases/download/v1.0/ligo-v1.0.zip)
 
 La guía de instalación completa está disponible en el archivo `LIGO-guia-instalacion.docx` incluido en el paquete.
 
