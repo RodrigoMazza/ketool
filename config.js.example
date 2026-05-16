@@ -1,0 +1,14 @@
+// Configuración de LIGO
+// Copiá este archivo como config.js y completá con tus datos de Supabase.
+// IMPORTANTE: config.js está en .gitignore — nunca subas tus claves al repositorio.
+
+window.__EXTRANET_CONFIG__ = {
+  // URL de tu proyecto en Supabase
+  // Ejemplo: https://abcdefghijklmnop.supabase.co
+  SUPABASE_URL: '',
+
+  // Clave pública (anon/publishable) de tu proyecto Supabase
+  // La encontrás en: Supabase Dashboard → Settings → API → Publishable key
+  SUPABASE_ANON_KEY: '',
+
+}

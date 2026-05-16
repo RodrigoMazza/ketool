@@ -1,0 +1,8 @@
+# Correct MIME type for ES modules (.mjs) — required for pdf.worker.min.mjs
+AddType application/javascript .mjs
+
+# SPA fallback — send all non-file requests to index.html
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ /index.html [L]

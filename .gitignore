@@ -1,0 +1,22 @@
+# Dependencias
+node_modules/
+
+# Configuración con claves privadas
+public/assets/config.js
+.env
+clave proyecto supabase.txt
+env.txt
+
+# Build generado
+dist/
+
+# Archivos de trabajo privados
+_docs/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
