@@ -48,7 +48,7 @@ En esperanto, *ligo* significa enlace. Eso es exactamente lo que este sistema co
 
 ```bash
 # 1. Clonar el repositorio
-git clone https://github.com/tu-usuario/ligo.git
+git clone https://github.com/RodrigoMazza/ligo.git
 cd ligo
 
 # 2. Instalar dependencias
@@ -75,7 +75,7 @@ npm run build
 
 El paquete de distribución incluye un asistente web (`instalador.html`) que guía el proceso paso a paso sin necesidad de terminal ni conocimientos de programación.
 
-**Descargar el paquete listo para instalar:** [ver releases](https://github.com/tu-usuario/ligo/releases)
+**Descargar el paquete listo para instalar:** [ver releases](https://github.com/RodrigoMazza/ligo/releases)
 
 La guía de instalación completa está disponible en el archivo `LIGO-guia-instalacion.docx` incluido en el paquete.
 
