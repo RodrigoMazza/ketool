@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getAllClients } from '@/services/clients'
-import { getTemplatesForClientDirect } from '@/services/templates'
+import { getTemplatesForClientDirect, getTemplatesWithoutClients } from '@/services/templates'
 import PageHeader from '@/components/layout/PageHeader'
 import Select from '@/components/ui/Select'
 import Spinner from '@/components/ui/Spinner'
@@ -24,13 +24,20 @@ export default function AdminClientPreview() {
   useEffect(() => {
     if (!clientId) { setTemplates([]); return }
     setLoadingTemplates(true)
-    getTemplatesForClientDirect(clientId)
+    const fetchPromise = clientId === 'unassigned'
+      ? getTemplatesWithoutClients()
+      : getTemplatesForClientDirect(clientId)
+
+    fetchPromise
       .then(setTemplates)
       .catch(() => setTemplates([]))
       .finally(() => setLoadingTemplates(false))
   }, [clientId])
 
-  const clientOptions = clients.map(c => ({ value: c.id, label: c.name }))
+  const clientOptions = [
+    { value: 'unassigned', label: 'Sin cliente asignado' },
+    ...clients.map(c => ({ value: c.id, label: c.name }))
+  ]
 
   return (
     <div>
@@ -67,7 +74,7 @@ export default function AdminClientPreview() {
         <EmptyState
           icon="📄"
           title="Sin plantillas"
-          description="Este cliente no tiene plantillas activas asignadas."
+          description={clientId === 'unassigned' ? "No hay plantillas activas sin cliente asignado." : "Este cliente no tiene plantillas activas asignadas."}
         />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">

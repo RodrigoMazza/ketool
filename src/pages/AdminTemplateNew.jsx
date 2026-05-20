@@ -15,7 +15,7 @@ import ErrorMessage from '@/components/ui/ErrorMessage'
 import Spinner from '@/components/ui/Spinner'
 import PageHeader from '@/components/layout/PageHeader'
 
-const STEPS = ['Archivo PDF', 'Metadatos', 'Campos', 'Clientes', 'Confirmar']
+const STEPS = ['Archivo PDF', 'Metadatos', 'Campos', 'Confirmar']
 
 export default function AdminTemplateNew() {
   const navigate = useNavigate()
@@ -66,6 +66,14 @@ export default function AdminTemplateNew() {
   }, [thumbnailFile])
 
   async function handlePdfUpload(file) {
+    if (pdfFile && fields.length > 0) {
+      const confirmScan = window.confirm('¿Querés re-escanear el nuevo PDF? Se perderán los campos configurados.')
+      if (!confirmScan) {
+        return
+      }
+      setFields([])
+    }
+
     setPdfFile(file)
     setScanning(true)
     setDetectedMarkers([])
@@ -84,7 +92,7 @@ export default function AdminTemplateNew() {
               field_key: m.fieldKey,
               label,
               field_type: 'qr',
-              required: true,
+              required: false,
               sort_order: i,
               qr_x: m.qr_x,
               qr_y: m.qr_y,
@@ -96,7 +104,7 @@ export default function AdminTemplateNew() {
             field_key: m.fieldKey,
             label: (() => { const s = m.fieldKey.replace(/_/g, ' ').toLowerCase(); return s.charAt(0).toUpperCase() + s.slice(1) })(),
             field_type: 'text',
-            required: true,
+            required: false,
             sort_order: i,
             qr_x: null,
             qr_y: null,
@@ -113,7 +121,10 @@ export default function AdminTemplateNew() {
               frameX: m.frameX ?? null,
               frameWidth: m.frameWidth ?? null,
               positions: m.positions,
-              textAlign: 'left',
+              textAlign: m.textAlign ?? 'left',
+              prefix: m.prefix ?? null,
+              originalMarker: m.originalMarker ?? null,
+              scannedWidth: m.scannedWidth ?? null,
             },
           }
         }))
@@ -149,6 +160,30 @@ export default function AdminTemplateNew() {
     } catch (err) {
       setError(err.message)
     }
+  }
+
+  function handleNext() {
+    setError('')
+    if (step === 0) {
+      if (!pdfFile) {
+        setError('Subí el archivo PDF.')
+        return
+      }
+    } else if (step === 1) {
+      if (!name.trim()) {
+        setError('Ingresá el nombre de la plantilla.')
+        return
+      }
+      if (!categoryId) {
+        setError('Seleccioná una categoría.')
+        return
+      }
+      if (!thumbnailFile) {
+        setError('Subí la imagen de previsualización.')
+        return
+      }
+    }
+    setStep(s => s + 1)
   }
 
   async function handleSave() {
@@ -247,7 +282,13 @@ export default function AdminTemplateNew() {
                   type="file"
                   accept="application/pdf"
                   className="sr-only"
-                  onChange={e => e.target.files[0] && handlePdfUpload(e.target.files[0])}
+                  onChange={e => {
+                    const file = e.target.files[0]
+                    if (file) {
+                      handlePdfUpload(file)
+                      e.target.value = ''
+                    }
+                  }}
                 />
                 {scanning ? (
                   <div className="flex flex-col items-center gap-2">
@@ -280,7 +321,7 @@ export default function AdminTemplateNew() {
           </div>
         )}
 
-        {/* Step 1: Metadata */}
+        {/* Step 1: Metadata & Clients */}
         {step === 1 && (
           <div className="space-y-5">
             <h2 className="text-base font-semibold text-ink">Datos de la plantilla</h2>
@@ -385,6 +426,16 @@ export default function AdminTemplateNew() {
                 />
               </div>
             </div>
+
+            <div className="border-t border-border pt-4">
+              <label className="text-sm font-medium text-ink block mb-1">Asignar a clientes</label>
+              <p className="text-xs text-ink-muted mb-3">Seleccioná los clientes que verán esta plantilla.</p>
+              <ClientAssignmentPanel
+                clients={clients}
+                selectedIds={selectedClientIds}
+                onChange={setSelectedClientIds}
+              />
+            </div>
           </div>
         )}
 
@@ -407,21 +458,8 @@ export default function AdminTemplateNew() {
           </div>
         )}
 
-        {/* Step 3: Clients */}
+        {/* Step 3: Confirm */}
         {step === 3 && (
-          <div className="space-y-4">
-            <h2 className="text-base font-semibold text-ink">Asignar a clientes</h2>
-            <p className="text-sm text-ink-muted">Seleccioná los clientes que verán esta plantilla.</p>
-            <ClientAssignmentPanel
-              clients={clients}
-              selectedIds={selectedClientIds}
-              onChange={setSelectedClientIds}
-            />
-          </div>
-        )}
-
-        {/* Step 4: Confirm */}
-        {step === 4 && (
           <div className="space-y-5">
             <h2 className="text-base font-semibold text-ink">Confirmar creación</h2>
 
@@ -496,7 +534,7 @@ export default function AdminTemplateNew() {
           {step === 0 ? 'Cancelar' : '← Anterior'}
         </Button>
         {step < STEPS.length - 1 ? (
-          <Button onClick={() => { setError(''); setStep(s => s + 1) }}>
+          <Button onClick={handleNext}>
             Siguiente →
           </Button>
         ) : (

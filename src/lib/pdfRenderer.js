@@ -5,6 +5,13 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
   import.meta.url
 ).href
 
+export async function getPdfDimensions(pdfUrl) {
+  const pdf = await pdfjsLib.getDocument({ url: pdfUrl }).promise
+  const page = await pdf.getPage(1)
+  const viewport = page.getViewport({ scale: 1 })
+  return { width: viewport.width, height: viewport.height }
+}
+
 /**
  * Renders the first page of a PDF to a PNG blob at the target width.
  * Height is derived from the page's natural aspect ratio.
@@ -14,7 +21,9 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
  * @returns {Promise<Blob>}
  */
 export async function renderPdfToPng(pdfBytes, targetWidth) {
-  const pdf = await pdfjsLib.getDocument({ data: pdfBytes }).promise
+  // Clone bytes to avoid detaching the original buffer when transferred to pdf.js worker
+  const bytesCopy = new Uint8Array(pdfBytes)
+  const pdf = await pdfjsLib.getDocument({ data: bytesCopy }).promise
   const page = await pdf.getPage(1)
 
   const baseViewport = page.getViewport({ scale: 1 })

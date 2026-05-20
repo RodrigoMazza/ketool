@@ -19,7 +19,7 @@ export async function uploadPdf(file, templateId) {
   const ext = file.name.split('.').pop()
   const path = `${templateId}/template.${ext}`
   await uploadFile(file, path)
-  return getPublicUrl(path)
+  return getPublicUrl(path) + '?t=' + Date.now()
 }
 
 export async function uploadThumbnail(file, templateId) {

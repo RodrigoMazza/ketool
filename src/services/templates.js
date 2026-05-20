@@ -40,6 +40,17 @@ export async function getTemplatesForClientDirect(clientId) {
   return data
 }
 
+export async function getTemplatesWithoutClients() {
+  const { data, error } = await supabase
+    .from('templates')
+    .select('*, categories ( id, name ), template_clients ( client_id )')
+    .eq('is_active', true)
+    .order('created_at', { ascending: false })
+
+  if (error) throw error
+  return data.filter(t => !t.template_clients || t.template_clients.length === 0)
+}
+
 export async function getAllTemplates() {
   const { data, error } = await supabase
     .from('templates')

@@ -1,12 +1,12 @@
-# LIGO — Portal de plantillas editables
+# KETOOL — Portal de plantillas editables
 
-**LIGO** es un portal web privado para estudios de diseño gráfico que permite a los clientes acceder a sus plantillas de comunicación, completar los campos editables y descargar el resultado como PDF (para imprenta) o PNG (para uso digital), sin necesidad de software de diseño.
+**KETOOL** es un portal web privado para estudios de diseño gráfico que permite a los clientes acceder a sus plantillas de comunicación, completar los campos editables y descargar el resultado como PDF (para imprenta) o PNG (para uso digital), sin necesidad de software de diseño.
 
-En esperanto, *ligo* significa enlace. Eso es exactamente lo que este sistema construye: un enlace directo y práctico entre el trabajo del diseñador y el de su cliente.
+En esperanto, *ke* significa herramienta y *tool* es su par en inglés. KETOOL es exactamente eso: la herramienta que conecta el trabajo del diseñador con el de su cliente.
 
 ---
 
-## ¿Qué hace LIGO?
+## ¿Qué hace KETOOL?
 
 **Para el diseñador (administrador):**
 - Panel de administración para gestionar clientes, usuarios y plantillas
@@ -22,6 +22,8 @@ En esperanto, *ligo* significa enlace. Eso es exactamente lo que este sistema co
 - Formulario con los campos a completar, con valores por defecto opcionales
 - Previsualización del QR en tiempo real
 - Descarga en PDF (alta resolución para imprenta) o PNG (para web y redes sociales)
+- Flecha animada sobre el diseño mientras completa los campos
+- Previsualización del resultado antes de descargar
 - Historial de descargas propias
 
 ---
@@ -48,8 +50,8 @@ En esperanto, *ligo* significa enlace. Eso es exactamente lo que este sistema co
 
 ```bash
 # 1. Clonar el repositorio
-git clone https://github.com/RodrigoMazza/ligo.git
-cd ligo
+git clone https://github.com/RodrigoMazza/ketool.git
+cd ketool
 
 # 2. Instalar dependencias
 npm install
@@ -75,9 +77,9 @@ npm run build
 
 El paquete de distribución incluye un asistente web (`instalador.html`) que guía el proceso paso a paso sin necesidad de terminal ni conocimientos de programación.
 
-**Descargar el paquete listo para instalar:** [LIGO v1.0](https://github.com/RodrigoMazza/ligo/releases/download/v1.0/ligo-v1.0.zip)
+**Descargar el paquete listo para instalar:** [KETOOL v1.0](https://github.com/RodrigoMazza/ketool/releases/download/v1.0/ketool-v1.zip)
 
-La guía de instalación completa está disponible en el archivo `LIGO-guia-instalacion.docx` incluido en el paquete.
+La guía de instalación completa está disponible en el archivo `KETOOL-guia-instalacion.pdf` incluido en el paquete.
 
 ---
 
@@ -91,7 +93,17 @@ En InDesign o Affinity Publisher, colocá marcadores de texto en el formato:
 {{NOMBRE_DEL_CAMPO}}
 ```
 
-El marcador debe quedar oculto debajo del fondo de la pieza. Si no hay fondo, creá un rectángulo blanco del tamaño de la página como capa base y ponelo por encima del marcador.
+El marcador debe quedar oculto debajo del fondo de la pieza.
+
+Podés definir la alineación del texto directamente en el marcador usando un prefijo:
+
+| Prefijo | Alineación |
+|---------|------------|
+| `{{c:CAMPO}}` | Centrado |
+| `{{i:CAMPO}}` o `{{l:CAMPO}}` | Izquierda |
+| `{{d:CAMPO}}` o `{{r:CAMPO}}` | Derecha |
+
+Sin prefijo, el sistema usa la alineación configurada en el panel de administración. Si no hay fondo, creá un rectángulo blanco del tamaño de la página como capa base y ponelo por encima del marcador.
 
 > **Importante para Affinity Publisher:** la opacidad 0% no exporta el elemento al PDF. Siempre usá el método del fondo como cobertura.
 
@@ -110,7 +122,7 @@ Dibujá un rectángulo con relleno exactamente `#FF00FF` (magenta puro) en la po
 ## Estructura del proyecto
 
 ```
-ligo/
+ketool/
 ├── public/
 │   └── assets/
 │       └── config.js.example   ← plantilla de configuración

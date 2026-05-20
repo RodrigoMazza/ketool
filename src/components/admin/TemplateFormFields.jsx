@@ -29,7 +29,7 @@ export default function TemplateFormFields({ fields, onChange, detectedMarkers =
       field_key: '',
       label: '',
       field_type: 'text',
-      required: true,
+      required: false,
       sort_order: fields.length,
       qr_x: null,
       qr_y: null,
@@ -95,7 +95,10 @@ export default function TemplateFormFields({ fields, onChange, detectedMarkers =
           frameX: marker.frameX ?? null,
           frameWidth: marker.frameWidth ?? null,
           positions: marker.positions ?? null,
-          textAlign: 'left',
+          textAlign: marker.textAlign ?? 'left',
+          prefix: marker.prefix ?? null,
+          originalMarker: marker.originalMarker ?? null,
+          scannedWidth: marker.scannedWidth ?? null,
         },
       }
     })

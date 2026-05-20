@@ -133,7 +133,11 @@ async function replaceTextMarker(pages, field, value, font, defaultColor) {
     let xDraw = pos.x
 
     if (textAlign !== 'left') {
-      const markerWidth = font.widthOfTextAtSize(`{{${field.field_key}}}`, fontSize)
+      const prefix = pos.prefix || meta.prefix || ''
+      const markerText = pos.originalMarker || meta.originalMarker || (prefix ? `{{${prefix}:${field.field_key}}}` : `{{${field.field_key}}}`)
+      const markerWidth = typeof pos.scannedWidth === 'number'
+        ? pos.scannedWidth
+        : (typeof meta.scannedWidth === 'number' ? meta.scannedWidth : font.widthOfTextAtSize(markerText, fontSize))
       const textWidth   = font.widthOfTextAtSize(displayValue, fontSize)
       if (textAlign === 'center') {
         xDraw = (pos.x + markerWidth / 2) - (textWidth / 2)

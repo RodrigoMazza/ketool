@@ -4,8 +4,6 @@ node_modules/
 # Configuración con claves privadas
 public/assets/config.js
 .env
-clave proyecto supabase.txt
-env.txt
 
 # Build generado
 dist/

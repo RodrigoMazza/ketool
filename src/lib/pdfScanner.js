@@ -6,7 +6,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
   import.meta.url
 ).href
 
-const MARKER_REGEX = /\{\{([A-Z0-9_]+)\}\}/g
+const MARKER_REGEX = /\{\{(?:([cdrilCDRIL]):)?([A-Z0-9_]+)\}\}/g
 
 /**
  * Scans a PDF for:
@@ -62,7 +62,18 @@ export async function scanPdfForMarkers(pdfBuffer) {
       let match
       MARKER_REGEX.lastIndex = 0
       while ((match = MARKER_REGEX.exec(line.text)) !== null) {
-        const fieldKey = match[1]
+        const prefix = match[1]
+        const fieldKey = match[2]
+        const lowerPrefix = prefix?.toLowerCase()
+        let textAlign = 'left'
+        if (lowerPrefix === 'c') {
+          textAlign = 'center'
+        } else if (lowerPrefix === 'd' || lowerPrefix === 'r') {
+          textAlign = 'right'
+        } else if (lowerPrefix === 'i' || lowerPrefix === 'l') {
+          textAlign = 'left'
+        }
+
         let accumulated = 0
         let startItem = line.items[0]
         for (const item of line.items) {
@@ -84,6 +95,9 @@ export async function scanPdfForMarkers(pdfBuffer) {
           fontSize: startItem.fontSize,
           frameX,
           frameWidth,
+          prefix: prefix ?? null,
+          originalMarker: prefix ? `{{${prefix}:${fieldKey}}}` : `{{${fieldKey}}}`,
+          scannedWidth: startItem.width,
         }
 
         if (!markerMap.has(fieldKey)) {
@@ -102,6 +116,10 @@ export async function scanPdfForMarkers(pdfBuffer) {
             color,
             frameX,
             frameWidth,
+            prefix: prefix ?? null,
+            originalMarker: prefix ? `{{${prefix}:${fieldKey}}}` : `{{${fieldKey}}}`,
+            scannedWidth: startItem.width,
+            textAlign,
             positions: [pos],
           })
         } else {

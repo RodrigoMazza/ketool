@@ -3,7 +3,7 @@ import Input from '@/components/ui/Input'
 import Textarea from '@/components/ui/Textarea'
 import { generateQrDataUrl } from '@/lib/qrGenerator'
 
-export default function TemplateFieldForm({ fields, initialValues = {}, onChange }) {
+export default function TemplateFieldForm({ fields, initialValues = {}, onChange, onFocusField }) {
   const [values, setValues] = useState(initialValues)
   const [qrPreviews, setQrPreviews] = useState({})
   const [errors, setErrors] = useState({})
@@ -56,6 +56,8 @@ export default function TemplateFieldForm({ fields, initialValues = {}, onChange
           value={values[field.field_key] ?? ''}
           error={errors[field.field_key]}
           qrPreview={qrPreviews[field.field_key]}
+          onFocus={() => onFocusField?.(field)}
+          onBlur={() => onFocusField?.(null)}
           onChange={val => {
             if (field.field_type === 'qr') {
               handleQrPreview(field.field_key, val)
@@ -69,7 +71,7 @@ export default function TemplateFieldForm({ fields, initialValues = {}, onChange
   )
 }
 
-function FieldInput({ field, value, error, qrPreview, onChange }) {
+function FieldInput({ field, value, error, qrPreview, onChange, onFocus, onBlur }) {
   const { label, field_type, required } = field
 
   if (field_type === 'textarea') {
@@ -78,6 +80,8 @@ function FieldInput({ field, value, error, qrPreview, onChange }) {
         label={label}
         value={value}
         onChange={e => onChange(e.target.value)}
+        onFocus={onFocus}
+        onBlur={onBlur}
         required={required}
         error={error}
         rows={3}
@@ -92,6 +96,8 @@ function FieldInput({ field, value, error, qrPreview, onChange }) {
         type="date"
         value={value}
         onChange={e => onChange(e.target.value)}
+        onFocus={onFocus}
+        onBlur={onBlur}
         required={required}
         error={error}
       />
@@ -106,6 +112,8 @@ function FieldInput({ field, value, error, qrPreview, onChange }) {
           type="url"
           value={value}
           onChange={e => onChange(e.target.value)}
+          onFocus={onFocus}
+          onBlur={onBlur}
           required={required}
           error={error}
           placeholder="https://ejemplo.com"
@@ -126,6 +134,8 @@ function FieldInput({ field, value, error, qrPreview, onChange }) {
       type="text"
       value={value}
       onChange={e => onChange(e.target.value)}
+      onFocus={onFocus}
+      onBlur={onBlur}
       required={required}
       error={error}
     />
